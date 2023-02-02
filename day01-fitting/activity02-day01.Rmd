@@ -1,8 +1,85 @@
 ---
-title: "Activity 2 - Day 1"
+title: "Activity 2 - Simple Linear Regression"
+author: "Saheli Sen"
+date: "1/24/2023"
 output: github_document
 ---
 
-```{setup, include=FALSE}
+
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# ****Day 1****
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ggplot2)
+```
+
+```{r}
+hfi <- readr::read_csv("https://www.openintro.org/data/csv/hfi.csv")
+hfi
+```
+
+There are 123 variables and 1458 observations present.
+
+```{r setup, include=FALSE}
+hfi_2016 <- hfi %>% filter (year == 2016)
+hfi_2016
+hfi_2016 %>% select(pf_score, pf_expression_control)
+```
+
+## Simple Linear Regression
+
+Below is a scatter plot of the two variables (note that the independent is on the horizontal axis and the dependent is on the vertical axis).
+
+```{r Task3 Plotting relationship}
+
+# Basic scatter plot with labels
+sctrplt <- ggplot(hfi_2016, aes(x = pf_expression_control, 
+                                y = pf_score)) + 
+geom_point(size = 1, 
+           color = "dodger blue")
+
+sctrplt <- sctrplt + ggtitle("The relationship between Personal Freedom Score & Expression Control \n ") +
+xlab("Personal Freedom Expression Control") + ylab("Personal Freedom Score")
+
+# Change the color, size and face of the title, x and y axis labels
+
+sctrplt <- sctrplt + 
+theme(plot.title = element_text(color = "blue", 
+                                size = 14,
+                                face="bold.italic", 
+                                hjust = 0.5),
+axis.title.x = element_text(color="black", 
+                            size=12, 
+                            face="italic"),
+axis.title.y = element_text(color="black", 
+                            size=12, 
+                            face="italic"))
+
+sctrplt
+
+```
+
+As per the data appearance we can say that it follows a linear trend, and some R output for placing a linear model on this scatterplot, using regression analysis, is given below:
+
+```{r Task4}
+
+sctrplt <- sctrplt + 
+geom_smooth(method = lm, 
+            se = FALSE, 
+            color = "black")
+
+sctrplt
+```
+
+```{r Task5}
+m1 <- lm(pf_score ~ pf_expression_control, data=hfi_2016)
+
+#summary(m1)
+tidy(m1)
+```
+
